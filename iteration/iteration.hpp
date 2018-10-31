@@ -2,7 +2,7 @@
 #define ITERATION_HPP
 #include <iostream>
 #include <string>
-#include "utils.hpp"
+#include "../utils/utils.hpp"
 using std::string;
 
 class Iteration

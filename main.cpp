@@ -1,5 +1,5 @@
 #include <iostream>
-#include "des.hpp"
+#include "des/des.hpp"
 #include <string>
 using std::cin;
 using std::cout;

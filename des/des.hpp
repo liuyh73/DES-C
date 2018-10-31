@@ -1,11 +1,11 @@
 #ifndef DES_HPP
 #define DES_HPP
 #include <iostream>
-#include "cipher_code.hpp"
-#include "initial_replace.hpp"
-#include "reverse_replace.hpp"
-#include "iteration.hpp"
-#include "utils.hpp"
+#include "../cipher_code/cipher_code.hpp"
+#include "../initial_replace/initial_replace.hpp"
+#include "../reverse_replace/reverse_replace.hpp"
+#include "../iteration/iteration.hpp"
+#include "../utils/utils.hpp"
 using std::string;
 class des {
 public:
