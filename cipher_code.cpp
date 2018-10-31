@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "cipher_code.hpp"
 using std::string;
 int pc_1[56] = {
 	57, 49, 41, 33, 25, 17, 9,
@@ -23,81 +23,78 @@ int pc_2[48] = {
 	46, 42, 50, 36, 29, 32,
 };
 
-int desplacements[16]={1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+int displacements[16]={1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
-class CipherCode {
-public:
-	CipherCode* getInstance(){
-		if(cipherCode == nullptr) {
-			cipherCode = new CipherCode();
-		}
-		return cipherCode;
+CipherCode* CipherCode::cipherCode = nullptr;
+
+CipherCode* CipherCode::getInstance(){
+	if(cipherCode == nullptr) {
+		cipherCode = new CipherCode();
 	}
-	void getKeys(string key, string[] keys) {
-		for(int i=1;i<=16;i++){
-			keys[i-1] = getCipherCodeN(i, key);
-		}
+	return cipherCode;
+}
+void CipherCode::getKeys(string key, string keys[]) {
+	for(int i=1;i<=16;i++){
+		keys[i-1] = getCipherCodeN(i, key);
 	}
-	string getCipherCodeN(int round, string key) {
-		int CNDN[28];
-		getCNDN(round, CNDN);
-		return replace(CNDN, key);
+}
+string CipherCode::getCipherCodeN(int round, string key) {
+	int CNDN[28];
+	getCNDN(round, CNDN);
+	return replace(CNDN, key);
+}
+
+void CipherCode::getCNDN(int round, int CNDN[]){
+	int CN[28], DN[28];
+	getCN(round, CN);
+	getDN(round, DN);
+	for(int i=0;i<28;i++){
+		CNDN[i]=CN[i];
+		CNDN[i+28]=DN[i];
+	}
+}
+
+void CipherCode::getCN(int round, int CN[]){
+	int displacement = getDisplacements(round);
+	for(int i=displacement;i<28;i++){
+		CN[i-displacement]=pc_1[i];
+	}
+	for(int i=0;i<displacement;i++){
+		CN[28-displacement+i] = pc_1[i];
+	}
+}
+
+void CipherCode::getDN(int round, int DN[]){
+	int displacement = getDisplacements(round);
+	for(int i=28+displacement;i<56;i++){
+		DN[i-28-displacement] = pc_1[i];
+	}
+	for(int i=28;i<28+displacement;i++){
+		DN[i-displacement] = pc_1[i];
+	}
+}
+
+int CipherCode::getDisplacements(int round){
+	int displacement = 0;
+	for(int i=0;i<round;i++){
+		displacement+=displacements[i];
+	}
+	return displacement;
+}
+
+string CipherCode::replace(int CNDN[], string key){
+	string initial_sipher_code_replace = "";
+	for(int i=0;i<56;i++){
+		initial_sipher_code_replace += key[CNDN[i]-1];
 	}
 
-	void getCNDN(int round, int[] CNDN){
-		int CN[28], DN[28];
-		getCN(round, CN);
-		getDN(round, DN);
-		for(int i=0;i<28;i++){
-			CNDN[i]=CN[i];
-			CNDN[i+28]=DN[i];
-		}
+	string cipher_code_replace = "";
+	for(int i=0;i<48;i++){
+		cipher_code_replace += initial_sipher_code_replace[pc_2[i]-1];
 	}
-
-	void getCN(int round, int[] CN){
-		int displacement = getDisplacements(round);
-		for(int i=displacement;i<28;i++){
-			CN[i-displacement]=pc_1[i];
-		}
-		for(int i=0;i<displacement;i++){
-			CN[28-displacement+i] = pc_1[i];
-		}
-	}
-
-	void getDN(int round, int[] DN){
-		int displacement = getDisplacements(round);
-		for(int i=28+displacement;i<56;i++){
-			DN[i-28-displacement] = pc_1[i];
-		}
-		for(int i=28;i<28+displacement;i++){
-			DN[i-displacement] = pc_1[i];
-		}
-	}
-
-	void getDisplacements(int round){
-		int displacement = 0;
-		for(int i=0;i<round;i++){
-			displacement+=displacements[i];
-		}
-		return displacement;
-	}
-
-	string replace(int []CNDN, string key){
-		string initial_sipher_code_replace = "";
-		for(int i=0;i<56;i++){
-			initial_sipher_code_replace += string(key[CNDN[i]-1]);
-		}
-
-		string cipher_code_replace = "";
-		for(int i=0;i<48;i++){
-			cipher_code_replace += string(initial_sipher_code_replace[pc_2[i]-1]);
-		}
-		return cipher_code_replace;
-	}
-private:
-	CipherCode(){}
-	~CipherCode(){
-		delete cipherCode;
-	}
-	static CipherCode* cipherCode = nullptr;
+	return cipher_code_replace;
+}
+CipherCode::CipherCode(){}
+CipherCode::~CipherCode(){
+	delete cipherCode;
 }

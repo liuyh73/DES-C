@@ -1,16 +1,19 @@
+#ifndef DES_HPP
+#define DES_HPP
 #include <iostream>
-#include "cipher_code.cpp"
-#include "utils.cpp"
-#include "initial_replace.cpp"
-#include "reverse_replace.cpp"
-#include "iteration.cpp"
+#include "cipher_code.hpp"
+#include "initial_replace.hpp"
+#include "reverse_replace.hpp"
+#include "iteration.hpp"
+#include "utils.hpp"
 using std::string;
 class des {
 public:
 	des(string _key);
 	~des();
-	string Encrypt(string clear_text, key);
-	string Decrypt(string ciper_text, key);
+	string Encrypt(string clear_text);
+	string Decrypt(string ciper_text);
+	string getText(string text, string key, bool tag);
 private:
 	string key;
 	CipherCode *cipherCode;
@@ -19,3 +22,4 @@ private:
 	ReverseReplace *reverseReplace;
 	Iteration *iteration;
 };
+#endif
