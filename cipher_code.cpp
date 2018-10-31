@@ -1,6 +1,7 @@
 #include <iostream>
 #include "cipher_code.hpp"
 using std::string;
+// #define DEBUG
 int pc_1[56] = {
 	57, 49, 41, 33, 25, 17, 9,
 	1, 58, 50, 42, 34, 26, 18,
@@ -36,10 +37,13 @@ CipherCode* CipherCode::getInstance(){
 void CipherCode::getKeys(string key, string keys[]) {
 	for(int i=1;i<=16;i++){
 		keys[i-1] = getCipherCodeN(i, key);
+#ifdef DEBUG
+		std::cout<<keys[i-1]<<std::endl;
+#endif
 	}
 }
 string CipherCode::getCipherCodeN(int round, string key) {
-	int CNDN[28];
+	int CNDN[56];
 	getCNDN(round, CNDN);
 	return replace(CNDN, key);
 }
@@ -51,6 +55,9 @@ void CipherCode::getCNDN(int round, int CNDN[]){
 	for(int i=0;i<28;i++){
 		CNDN[i]=CN[i];
 		CNDN[i+28]=DN[i];
+#ifdef DEBUG
+		std::cout<<CNDN[i]<<std::endl;
+#endif
 	}
 }
 
@@ -87,11 +94,16 @@ string CipherCode::replace(int CNDN[], string key){
 	for(int i=0;i<56;i++){
 		initial_sipher_code_replace += key[CNDN[i]-1];
 	}
-
+#ifdef DEBUG
+	std::cout<<initial_sipher_code_replace<<std::endl;
+#endif
 	string cipher_code_replace = "";
 	for(int i=0;i<48;i++){
 		cipher_code_replace += initial_sipher_code_replace[pc_2[i]-1];
 	}
+#ifdef DEBUG
+	std::cout<<cipher_code_replace<<std::endl;
+#endif
 	return cipher_code_replace;
 }
 CipherCode::CipherCode(){}

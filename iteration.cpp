@@ -3,6 +3,7 @@
 #include "utils.hpp"
 #include "iteration.hpp"
 using std::string;
+// #define DEBUG
 int extended_replacement_matrix[8][6] = {
 	{32, 1, 2, 3, 4, 5},
 	{4, 5, 6, 7, 8, 9},
@@ -81,7 +82,6 @@ string Iteration::F(string clear_text_init_replace, string keys[]) {
 	string L[17], R[17];
 	L[0] = clear_text_init_replace.substr(0,32);
 	R[0] = clear_text_init_replace.substr(32);
-
 	string R_extended, R_extended_xor, R_extended_xor_S_trans, R_extended_xor_S_P_trans,R_extended_xor_S_P_trans_xor;
 	for(int k=0;k<16;k++){
 		// Extended replacement
@@ -97,6 +97,16 @@ string Iteration::F(string clear_text_init_replace, string keys[]) {
 
 		L[k+1] = R[k];
 		R[k+1] = R_extended_xor_S_P_trans_xor;
+#ifdef DEBUG
+		std::cout<<L[k+1]<<" "<<R[k+1]<<std::endl;
+		if(k==0){
+			std::cout<<R_extended<<std::endl;
+			std::cout<<R_extended_xor<<std::endl;
+			std::cout<<R_extended_xor_S_trans<<std::endl;
+			std::cout<<R_extended_xor_S_P_trans<<std::endl;
+			std::cout<<R_extended_xor_S_P_trans_xor<<std::endl;
+		}
+#endif
 	}
 	string R_16_L_16 = R[16]+L[16];
 	return R_16_L_16;
@@ -151,12 +161,12 @@ string Iteration::xorWithL_K(string R_extended_xor_S_P_trans, string L_K) {
 
 int Iteration::getRow(char num1, char num2) {
 	string row= "";
-	row+=num1+num2;
-	return atoi(row.c_str());
+	row=row + num1+num2;
+	return std::stoi(row.c_str(), 0, 2);
 }
 
 int Iteration::getColumn(string column) {
-	return atoi(column.c_str());
+	return std::stoi(column.c_str(), 0, 2);
 }
 
 Iteration::Iteration(){
